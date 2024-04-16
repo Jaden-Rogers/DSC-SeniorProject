@@ -8,10 +8,12 @@ public class FPSInput : MonoBehaviour
     public float gravity = -9.8f;
 
     private CharacterController _charController;
+
     void Start()
     {
         _charController = GetComponent<CharacterController>();
     }
+
     void Update()
     {
         float deltaX = Input.GetAxis("Horizontal") * speed;
@@ -23,4 +25,5 @@ public class FPSInput : MonoBehaviour
         movement = transform.TransformDirection(movement);
         _charController.Move(movement);
     }
+
 }
