@@ -2,15 +2,24 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using static System.TimeZoneInfo;
 
 public class PlayerHealth : MonoBehaviour
 {
     public int health = 3;
     public bool canTakeDamage = true;
+    private LevelLoader levelLoader;
+    private FPSInput fpsInput;
+    private MouseLook[] mouseLooks;
+    private Camera playerCamera;
 
     // Start is called before the first frame update
     void Start()
     {
+        levelLoader = GameObject.FindObjectOfType<LevelLoader>();
+        fpsInput = GameObject.FindObjectOfType<FPSInput>();
+        mouseLooks = GameObject.FindObjectsOfType<MouseLook>();
+        playerCamera = GameObject.FindObjectOfType<Camera>();
         
     }
 
@@ -36,7 +45,15 @@ public class PlayerHealth : MonoBehaviour
 
     private void PlayerDeath()
     {
-        SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
+        Debug.Log("Player died");
+        fpsInput.enabled = false;
+        foreach (MouseLook mouseLook in mouseLooks)
+        {
+            mouseLook.enabled = false;
+        }
+        playerCamera.transform.Rotate(Vector3.back, 90);
+        levelLoader.LoadCurrentLevel();
+        
     }
 
     private IEnumerator InvincibilityFrames()
