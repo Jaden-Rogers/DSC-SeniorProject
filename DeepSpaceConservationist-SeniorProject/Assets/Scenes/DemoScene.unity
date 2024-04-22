@@ -5831,8 +5831,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   axes: 1
-  sensitivityHor: 9
-  sensitivityVert: 9
+  sensitivityHor: 6
+  sensitivityVert: 6
   minimumVert: -45
   maximumVert: 45
 --- !u!143 &700725361
@@ -7038,8 +7038,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   axes: 2
-  sensitivityHor: 9
-  sensitivityVert: 9
+  sensitivityHor: 6
+  sensitivityVert: 6
   minimumVert: -45
   maximumVert: 45
 --- !u!114 &963194230
@@ -12123,7 +12123,7 @@ Transform:
   m_GameObject: {fileID: 1970053368}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -93, y: 79.1, z: -208.5}
+  m_LocalPosition: {x: -93, y: 79.1, z: -209.40001}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
