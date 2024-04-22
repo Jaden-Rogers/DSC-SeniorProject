@@ -12,6 +12,9 @@ public class EnemyAI : MonoBehaviour
     public LayerMask whatIsGround, whatIsPlayer;
     public GameObject projectile;
     public int health;
+    public bool stunnable = true;
+    public int timesStunned = 0;
+    private LevelLoader levelLoader;
 
     //Patrolling
     public Vector3 walkPoint;
@@ -28,6 +31,7 @@ public class EnemyAI : MonoBehaviour
 
     private void Awake()
     {
+        levelLoader = GameObject.FindObjectOfType<LevelLoader>();
         player = GameObject.Find("Player").transform;
         agent = GetComponent<NavMeshAgent>();
     }
@@ -39,8 +43,13 @@ public class EnemyAI : MonoBehaviour
         playerInAttackRange = Physics.CheckSphere(transform.position, attackRange, whatIsPlayer);
 
         if (!playerInSightRange && !playerInAttackRange) Patrolling();
-        if (playerInSightRange && !playerInAttackRange) ChasePlayer();
-        if (playerInSightRange && playerInAttackRange) AttackPlayer();
+        if (playerInSightRange && !playerInAttackRange || health < 5 && !playerInAttackRange) ChasePlayer();
+        if (playerInSightRange && playerInAttackRange || health < 5 && playerInAttackRange) AttackPlayer();
+
+        if (timesStunned > 3)
+        {
+            levelLoader.LoadNextLevel();
+        }
     }
 
     private void Patrolling()
@@ -109,21 +118,39 @@ public class EnemyAI : MonoBehaviour
     {
         //Take damage
         health -= damage;
-        if (health <= 0) Invoke(nameof(StunEnemy), 0.5f);
+        Debug.Log("Enemy health = " + health);
+        if (health <= 0)
+        {
+            if (stunnable)
+            {
+                StunEnemy();
+            }
+            else
+            { 
+                Die();
+            }
+        }
+
     }
 
     private void StunEnemy()
     {
         //Stun enemy
+        health = 1000;
+        timesStunned += 1;
+        sightRange += 100;
+        agent.speed += 5;
         agent.isStopped = true;
         agent.velocity = Vector3.zero;
-        Invoke(nameof(Recover), 15f);
+        StartCoroutine(Recover());
     }
 
-    private void Recover()
+    private IEnumerator Recover()
     {
         //Recover enemy
+        yield return new WaitForSeconds(5f);
         agent.isStopped = false;
+        health = 5;
     }
 
     private void OnDrawGizmosSelected()
@@ -132,5 +159,10 @@ public class EnemyAI : MonoBehaviour
         Gizmos.DrawWireSphere(transform.position, attackRange);
         Gizmos.color = Color.yellow;
         Gizmos.DrawWireSphere(transform.position, sightRange);
+    }
+
+    private void Die()
+    {
+        Destroy(gameObject);
     }
 }
